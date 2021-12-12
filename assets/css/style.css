@@ -93,6 +93,11 @@ p {
     color: var(--secondaryColor);
 }
 
+#next-question {
+    width: 75%;
+    display: none;
+}
+
 
 
 

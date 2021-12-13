@@ -25,7 +25,6 @@ main {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-around;
     height: 75%;
     width: 75%;
     padding: auto;
@@ -94,7 +93,7 @@ p {
 }
 
 #next-question {
-    width: 75%;
+    width: 100%;
     display: none;
 }
 

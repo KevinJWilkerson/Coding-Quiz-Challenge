@@ -6,6 +6,16 @@ var nextQuestionContainer = document.getElementById("next-question-container")
 
 // Start quiz on click
 document.getElementById("start-quiz").addEventListener("click", function() {
+    var highScore = localStorage.getItem("highscore");
+    if (highScore === null) {
+        highscore = 0;
+    }
+
+    var playerInit = localStorage.getItem("Player Initials");
+    if (playerInit === null) {
+        playerInit = '';
+    }
+
     document.getElementById("site-title").style.display = "none";
     document.getElementById("question1").style.display = "block";
     
@@ -14,17 +24,22 @@ document.getElementById("start-quiz").addEventListener("click", function() {
     var quizTimer = setInterval(function() {
         document.getElementById("timer").innerHTML = counter;
         counter--;
-        if (counter === 0) {
+        if (counter <= 0) {
             clearInterval(quizTimer);
+            var initials = window.prompt("Please enter your initials");
+            window.playerInit = initials;
+            localStorage.setItem("Player Initials", playerInit);
+            return playerInit;
         }
 
-        // store counter as playerScore global variable when quiz is finished
-        if (document.getElementById("finish-quiz").addEventListener("click",  function() {
-            var score = counter; 
-            window.playerScore = score;
-            localStorage.setItem("highscore", playerScore);
-
-        }));
+        for (var i = 0; i < incorrectAnswer.length; i++) {
+            incorrectAnswer[i].addEventListener("click", function(eventW) {
+                var clickedEl = eventW.target;
+                if (clickedEl.className === 'incorrect') {
+                    counter--;
+                }
+            })
+        }
     }, 1000);
 
     // First question
@@ -48,6 +63,7 @@ document.getElementById("start-quiz").addEventListener("click", function() {
         document.getElementById("next-question").addEventListener("click", function() {
             document.getElementById("question1").style.display = "none";
             document.getElementById("question2").style.display = "block";
+            document.getElementById("next-question").style.display = "none";
         })    
     });
 
@@ -56,7 +72,6 @@ document.getElementById("start-quiz").addEventListener("click", function() {
 
         // If clicked answer is correct, turn green, if incorrect turn red.
         var clickedEl = event2.target;
-        console.log(clickedEl);
         if (clickedEl.className === 'correct') {
             clickedEl.style.backgroundColor = "green";
             
@@ -73,6 +88,7 @@ document.getElementById("start-quiz").addEventListener("click", function() {
         document.getElementById("next-question").addEventListener("click", function() {
             document.getElementById("question2").style.display = "none";
             document.getElementById("question3").style.display = "block";
+            document.getElementById("next-question").style.display = "none";
         })
     });
 
@@ -81,7 +97,6 @@ document.getElementById("start-quiz").addEventListener("click", function() {
 
         // If clicked answer is correct, turn green, if incorrect turn red.
         var clickedEl = event3.target;
-        console.log(clickedEl);
         if (clickedEl.className === 'correct') {
             clickedEl.style.backgroundColor = "green";
             
@@ -98,6 +113,7 @@ document.getElementById("start-quiz").addEventListener("click", function() {
         document.getElementById("next-question").addEventListener("click", function() {
             document.getElementById("question3").style.display = "none";
             document.getElementById("question4").style.display = "block";
+            document.getElementById("next-question").style.display = "none";
         })
     });
 
@@ -106,7 +122,6 @@ document.getElementById("start-quiz").addEventListener("click", function() {
 
         // If clicked answer is correct, turn green, if incorrect turn red.
         var clickedEl = event4.target;
-        console.log(clickedEl);
         if (clickedEl.className === 'correct') {
             clickedEl.style.backgroundColor = "green";
             
@@ -123,6 +138,7 @@ document.getElementById("start-quiz").addEventListener("click", function() {
         document.getElementById("next-question").addEventListener("click", function() {
             document.getElementById("question4").style.display = "none";
             document.getElementById("question5").style.display = "block";
+            document.getElementById("next-question").style.display = "none";
         })
     });
 
@@ -131,14 +147,13 @@ document.getElementById("start-quiz").addEventListener("click", function() {
 
         // If clicked answer is correct, turn green, if incorrect turn red.
         var clickedEl = event5.target;
-        console.log(clickedEl);
         if (clickedEl.className === 'correct') {
             clickedEl.style.backgroundColor = "green";
             
-            // If correct answer clicked, display next question button
+            // If correct answer clicked, display finish quiz button
             document.getElementById("next-question").style.display = "block";
             document.getElementById("next-question").innerHTML = "Finish quiz!";
-            document.getElementById("next-question").id = "finish-quiz";
+            document.getElementById("next-question-container").id = "finish-quiz";
 
         }  else {
             clickedEl.style.backgroundColor = "red";
@@ -146,61 +161,39 @@ document.getElementById("start-quiz").addEventListener("click", function() {
         
         clickedEl.style.color = "white";
     
-        // when finish quiz button is clicked, display highscore and hide other elements
-        document.getElementById("next-question").addEventListener("click", function() {
+    // when finish quiz button is clicked, display highscore and hide other elements
+    document.getElementById("finish-quiz").addEventListener("click", function() {
+
+        // set the player's score
+        var playerScore = counter;
+
+        // check to see if the player has set a new high score
+        window.alert("You finished the quiz! Let's see how you did.");
+        if (playerScore > localStorage.getItem("highscore")) {
+            var playerInit = window.prompt("You set a new high score! Please enter your initials.")
+            localStorage.setItem("highscore", playerScore);
+            localStorage.setItem("Player Initials", playerInit);
+            document.getElementById("highscore").innerHTML = playerInit + ": " + playerScore;
             document.getElementById("question5").style.display = "none";
+            document.getElementById("finish-quiz").style.display = "none";
             document.getElementById("highscore").style.display = "block";
-            document.getElementById("next-question").style.display = "none";
-            console.log(counter.toString());
-        })
+
+            document.getElementById("highscore").addEventListener("click", function() {
+                location.reload();
+            })
+
+        } else {
+            window.alert("Sorry, you didn't beat the high score. Better luck next time!");
+            location.reload();
+        }
+
+    })
+
     });
 });
 
-var endQuiz = function() {
-    var highScore = localStorage.getItem("highscore");
-    if (highScore === null) {
-        highscore = 0;
-    }
-
-    if (playerScore > highScore) {
-        localStorage.setItem("highscore", playerScore);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// if correct was clicked, pause timer and generate next question button
-/* for (var i = 0; i < correctAnswer.length; i++) {
-    correctAnswer[i].addEventListener("click", function() {
-    console.log("correct was clicked!");
-    });
-}
-
-// if incorrect was clicked, subtract 5 from timer and visually show wrongness
-for (var i = 0; i < incorrectAnswer.length; i++) {
-    incorrectAnswer[i].addEventListener("click", function() {
-    console.log("incorrect was clicked!");
-    })
-    incorrectAnswer[i].style.color = "red";
-} */
-
-/* document.getElementsByClassName("correct").addEventListener("click", function() {
-    var answerReveal = function() {
-        for (var i = 0; i < answerReveal.length; i++) {
-            answerReveal[i].style.backgroundColor = "red";
-        }
-    }
-}); */
-
+document.getElementById("high-scores").addEventListener("click", function() {
+    playerInit = localStorage.getItem("Player Initials");
+    playerScore = localStorage.getItem("highscore");
+    document.getElementById("high-scores").innerHTML = "Current High Score - " + playerInit + ": " + playerScore;
+})

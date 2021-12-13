@@ -97,6 +97,11 @@ p {
     display: none;
 }
 
+#highscore {
+    width: 100%;
+    display: none;
+}
+
 
 
 
